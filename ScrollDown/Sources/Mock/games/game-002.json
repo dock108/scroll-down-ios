@@ -1,0 +1,129 @@
+{
+  "game": {
+    "id": 12346,
+    "league_code": "NBA",
+    "season": 2025,
+    "season_type": "regular",
+    "game_date": "2026-01-01T20:00:00-06:00",
+    "home_team": "Chicago Bulls",
+    "away_team": "Miami Heat",
+    "home_score": 98,
+    "away_score": 102,
+    "status": "completed",
+    "scrape_version": 1,
+    "last_scraped_at": "2026-01-02T02:45:00Z",
+    "has_boxscore": true,
+    "has_player_stats": true,
+    "has_odds": true,
+    "has_social": false,
+    "has_pbp": true,
+    "play_count": 456,
+    "social_post_count": 0,
+    "home_team_x_handle": "chicagobulls",
+    "away_team_x_handle": "MiamiHEAT"
+  },
+  "team_stats": [
+    {
+      "team": "Chicago Bulls",
+      "is_home": true,
+      "stats": {
+        "fg": 38,
+        "fga": 85,
+        "fg_pct": ".447",
+        "fg3": 10,
+        "fg3a": 28,
+        "fg3_pct": ".357",
+        "ft": 12,
+        "fta": 14,
+        "ft_pct": ".857",
+        "orb": 9,
+        "drb": 30,
+        "trb": 39,
+        "ast": 22,
+        "stl": 6,
+        "blk": 4,
+        "tov": 16,
+        "pf": 20
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T02:45:00Z"
+    },
+    {
+      "team": "Miami Heat",
+      "is_home": false,
+      "stats": {
+        "fg": 40,
+        "fga": 82,
+        "fg_pct": ".488",
+        "fg3": 12,
+        "fg3a": 30,
+        "fg3_pct": ".400",
+        "ft": 10,
+        "fta": 12,
+        "ft_pct": ".833",
+        "orb": 7,
+        "drb": 32,
+        "trb": 39,
+        "ast": 26,
+        "stl": 9,
+        "blk": 5,
+        "tov": 12,
+        "pf": 16
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T02:45:00Z"
+    }
+  ],
+  "player_stats": [
+    {
+      "team": "Miami Heat",
+      "player_name": "Jimmy Butler",
+      "minutes": 35.0,
+      "points": 26,
+      "rebounds": 7,
+      "assists": 5,
+      "raw_stats": {
+        "mp": "35:00",
+        "fg": 10,
+        "fga": 18,
+        "pts": 26,
+        "ast": 5,
+        "trb": 7
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T02:45:00Z"
+    }
+  ],
+  "odds": [
+    {
+      "book": "DraftKings",
+      "market_type": "spread",
+      "side": "Chicago Bulls",
+      "line": -2.5,
+      "price": -110,
+      "is_closing_line": true,
+      "observed_at": "2026-01-01T19:55:00Z"
+    }
+  ],
+  "social_posts": [],
+  "plays": [
+    {
+      "play_index": 1,
+      "quarter": 1,
+      "game_clock": "12:00",
+      "play_type": "jump_ball",
+      "team_abbreviation": "CHI",
+      "player_name": null,
+      "description": "Jump ball: Heat win tip",
+      "home_score": 0,
+      "away_score": 0
+    }
+  ],
+  "derived_metrics": {
+    "spread_result": "push",
+    "total_result": "over",
+    "margin": -4
+  },
+  "raw_payloads": {}
+}
+

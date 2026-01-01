@@ -1,0 +1,58 @@
+{
+  "posts": [
+    {
+      "id": 101,
+      "game_id": 12345,
+      "team_id": "BOS",
+      "post_url": "https://x.com/celtics/status/1874567890123456789",
+      "posted_at": "2026-01-01T19:00:00Z",
+      "has_video": false,
+      "video_url": null,
+      "image_url": "https://pbs.twimg.com/media/example1.jpg",
+      "tweet_text": "Tonight's starting 5 🍀",
+      "source_handle": "celtics",
+      "media_type": "image"
+    },
+    {
+      "id": 102,
+      "game_id": 12345,
+      "team_id": "BOS",
+      "post_url": "https://x.com/celtics/status/1874567890123456790",
+      "posted_at": "2026-01-01T20:15:00Z",
+      "has_video": true,
+      "video_url": "https://video.twimg.com/ext_tw_video/1874567890123456790/pu/vid/1280x720/example.mp4",
+      "image_url": "https://pbs.twimg.com/ext_tw_video_thumb/1874567890123456790/pu/img/example.jpg",
+      "tweet_text": "JAYSON TATUM WITH THE SLAM! 💥",
+      "source_handle": "celtics",
+      "media_type": "video"
+    },
+    {
+      "id": 103,
+      "game_id": 12345,
+      "team_id": "LAL",
+      "post_url": "https://x.com/Lakers/status/1874567890123456791",
+      "posted_at": "2026-01-01T20:22:00Z",
+      "has_video": true,
+      "video_url": "https://video.twimg.com/ext_tw_video/1874567890123456791/pu/vid/1280x720/example2.mp4",
+      "image_url": "https://pbs.twimg.com/ext_tw_video_thumb/1874567890123456791/pu/img/example2.jpg",
+      "tweet_text": "LeBron answers right back! 👑",
+      "source_handle": "Lakers",
+      "media_type": "video"
+    },
+    {
+      "id": 104,
+      "game_id": 12345,
+      "team_id": "BOS",
+      "post_url": "https://x.com/celtics/status/1874567890123456792",
+      "posted_at": "2026-01-01T22:30:00Z",
+      "has_video": false,
+      "video_url": null,
+      "image_url": null,
+      "tweet_text": "Final: Celtics 112, Lakers 108. Great team win! ☘️",
+      "source_handle": "celtics",
+      "media_type": "none"
+    }
+  ],
+  "total": 4
+}
+

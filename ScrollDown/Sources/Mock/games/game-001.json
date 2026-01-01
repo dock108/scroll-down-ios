@@ -1,0 +1,254 @@
+{
+  "game": {
+    "id": 12345,
+    "league_code": "NBA",
+    "season": 2025,
+    "season_type": "regular",
+    "game_date": "2026-01-01T19:30:00-05:00",
+    "home_team": "Boston Celtics",
+    "away_team": "Los Angeles Lakers",
+    "home_score": 112,
+    "away_score": 108,
+    "status": "completed",
+    "scrape_version": 2,
+    "last_scraped_at": "2026-01-02T03:15:00Z",
+    "has_boxscore": true,
+    "has_player_stats": true,
+    "has_odds": true,
+    "has_social": true,
+    "has_pbp": true,
+    "play_count": 482,
+    "social_post_count": 24,
+    "home_team_x_handle": "celtics",
+    "away_team_x_handle": "Lakers"
+  },
+  "team_stats": [
+    {
+      "team": "Los Angeles Lakers",
+      "is_home": false,
+      "stats": {
+        "fg": 42,
+        "fga": 89,
+        "fg_pct": ".472",
+        "fg3": 12,
+        "fg3a": 34,
+        "fg3_pct": ".353",
+        "ft": 12,
+        "fta": 16,
+        "ft_pct": ".750",
+        "orb": 10,
+        "drb": 32,
+        "trb": 42,
+        "ast": 24,
+        "stl": 8,
+        "blk": 5,
+        "tov": 14,
+        "pf": 22
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T03:15:00Z"
+    },
+    {
+      "team": "Boston Celtics",
+      "is_home": true,
+      "stats": {
+        "fg": 44,
+        "fga": 88,
+        "fg_pct": ".500",
+        "fg3": 14,
+        "fg3a": 36,
+        "fg3_pct": ".389",
+        "ft": 10,
+        "fta": 12,
+        "ft_pct": ".833",
+        "orb": 8,
+        "drb": 34,
+        "trb": 42,
+        "ast": 28,
+        "stl": 10,
+        "blk": 6,
+        "tov": 12,
+        "pf": 18
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T03:15:00Z"
+    }
+  ],
+  "player_stats": [
+    {
+      "team": "Boston Celtics",
+      "player_name": "Jayson Tatum",
+      "minutes": 38.5,
+      "points": 32,
+      "rebounds": 8,
+      "assists": 6,
+      "raw_stats": {
+        "mp": "38:30",
+        "fg": 12,
+        "fga": 22,
+        "fg_pct": ".545",
+        "fg3": 4,
+        "fg3a": 10,
+        "fg3_pct": ".400",
+        "ft": 4,
+        "fta": 4,
+        "ft_pct": "1.000",
+        "orb": 1,
+        "drb": 7,
+        "trb": 8,
+        "ast": 6,
+        "stl": 2,
+        "blk": 1,
+        "tov": 3,
+        "pf": 2,
+        "pts": 32,
+        "plus_minus": "+12"
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T03:15:00Z"
+    },
+    {
+      "team": "Los Angeles Lakers",
+      "player_name": "LeBron James",
+      "minutes": 36.2,
+      "points": 28,
+      "rebounds": 10,
+      "assists": 8,
+      "raw_stats": {
+        "mp": "36:12",
+        "fg": 11,
+        "fga": 20,
+        "fg_pct": ".550",
+        "fg3": 2,
+        "fg3a": 6,
+        "fg3_pct": ".333",
+        "ft": 4,
+        "fta": 6,
+        "ft_pct": ".667",
+        "orb": 2,
+        "drb": 8,
+        "trb": 10,
+        "ast": 8,
+        "stl": 1,
+        "blk": 2,
+        "tov": 4,
+        "pf": 3,
+        "pts": 28,
+        "plus_minus": "-8"
+      },
+      "source": "basketball-reference",
+      "updated_at": "2026-01-02T03:15:00Z"
+    }
+  ],
+  "odds": [
+    {
+      "book": "FanDuel",
+      "market_type": "spread",
+      "side": "Boston Celtics",
+      "line": -4.5,
+      "price": -110,
+      "is_closing_line": true,
+      "observed_at": "2026-01-01T19:25:00Z"
+    },
+    {
+      "book": "FanDuel",
+      "market_type": "spread",
+      "side": "Los Angeles Lakers",
+      "line": 4.5,
+      "price": -110,
+      "is_closing_line": true,
+      "observed_at": "2026-01-01T19:25:00Z"
+    },
+    {
+      "book": "FanDuel",
+      "market_type": "total",
+      "side": "over",
+      "line": 221.5,
+      "price": -110,
+      "is_closing_line": true,
+      "observed_at": "2026-01-01T19:25:00Z"
+    },
+    {
+      "book": "FanDuel",
+      "market_type": "moneyline",
+      "side": "Boston Celtics",
+      "line": null,
+      "price": -185,
+      "is_closing_line": true,
+      "observed_at": "2026-01-01T19:25:00Z"
+    }
+  ],
+  "social_posts": [
+    {
+      "id": 101,
+      "post_url": "https://x.com/celtics/status/1874567890123456789",
+      "posted_at": "2026-01-01T19:00:00Z",
+      "has_video": false,
+      "team_abbreviation": "BOS",
+      "tweet_text": "Tonight's starting 5 🍀",
+      "video_url": null,
+      "image_url": "https://pbs.twimg.com/media/example1.jpg",
+      "source_handle": "celtics",
+      "media_type": "image"
+    },
+    {
+      "id": 102,
+      "post_url": "https://x.com/celtics/status/1874567890123456790",
+      "posted_at": "2026-01-01T20:15:00Z",
+      "has_video": true,
+      "team_abbreviation": "BOS",
+      "tweet_text": "JAYSON TATUM WITH THE SLAM! 💥",
+      "video_url": "https://video.twimg.com/ext_tw_video/example.mp4",
+      "image_url": "https://pbs.twimg.com/ext_tw_video_thumb/example.jpg",
+      "source_handle": "celtics",
+      "media_type": "video"
+    }
+  ],
+  "plays": [
+    {
+      "play_index": 1,
+      "quarter": 1,
+      "game_clock": "12:00",
+      "play_type": "jump_ball",
+      "team_abbreviation": "BOS",
+      "player_name": null,
+      "description": "Jump ball: Porzingis vs. Davis - Celtics win tip",
+      "home_score": 0,
+      "away_score": 0
+    },
+    {
+      "play_index": 2,
+      "quarter": 1,
+      "game_clock": "11:42",
+      "play_type": "made_shot",
+      "team_abbreviation": "BOS",
+      "player_name": "Jayson Tatum",
+      "description": "Tatum 3PT Jump Shot (3 PTS)",
+      "home_score": 3,
+      "away_score": 0
+    },
+    {
+      "play_index": 3,
+      "quarter": 1,
+      "game_clock": "11:20",
+      "play_type": "made_shot",
+      "team_abbreviation": "LAL",
+      "player_name": "LeBron James",
+      "description": "James Driving Layup (2 PTS)",
+      "home_score": 3,
+      "away_score": 2
+    }
+  ],
+  "derived_metrics": {
+    "spread_result": "covered",
+    "total_result": "under",
+    "margin": 4,
+    "ats_margin": 0.5
+  },
+  "raw_payloads": {
+    "team_boxscores": [],
+    "player_boxscores": [],
+    "odds": []
+  }
+}
+
