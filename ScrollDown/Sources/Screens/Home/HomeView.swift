@@ -14,14 +14,22 @@ struct HomeView: View {
             HomeTheme.background
                 .ignoresSafeArea()
             VStack(spacing: 0) {
-                introHeaderView
                 headerView
                 contentView
             }
         }
-        .navigationTitle(Strings.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 8) {
+                    Image("AppLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 28)
+                    Text(Strings.navigationTitle)
+                        .font(.headline)
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 dataModeIndicator
             }
@@ -32,21 +40,6 @@ struct HomeView: View {
     }
     
     // MARK: - Subviews
-    
-    private var introHeaderView: some View {
-        VStack(alignment: .leading, spacing: Layout.introSpacing) {
-            Text(Strings.introTitle)
-                .font(.title2.weight(.bold))
-                .foregroundColor(.primary)
-            Text(Strings.introSubtitle)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Layout.horizontalPadding)
-        .padding(.top, Layout.introTopPadding)
-        .padding(.bottom, Layout.introBottomPadding)
-    }
     
     private var headerView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -225,7 +218,9 @@ struct HomeView: View {
     
     private var sectionedGames: [GameListSection] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let todayStart = AppDate.startOfToday
+        let todayEnd = AppDate.endOfToday
+        let historyStart = AppDate.historyWindowStart
         
         var earlier: [GameSummary] = []
         var todayGames: [GameSummary] = []
@@ -233,15 +228,17 @@ struct HomeView: View {
         
         for game in games {
             guard let gameDate = game.parsedGameDate else {
-                earlier.append(game)
+                continue // Skip games without valid dates
+            }
+            
+            // Exclude games older than history window (2 days ago)
+            if gameDate < historyStart {
                 continue
             }
             
-            let gameDay = calendar.startOfDay(for: gameDate)
-            
-            if gameDay < today {
+            if gameDate < todayStart {
                 earlier.append(game)
-            } else if gameDay == today {
+            } else if gameDate <= todayEnd {
                 todayGames.append(game)
             } else {
                 upcoming.append(game)
@@ -249,7 +246,7 @@ struct HomeView: View {
         }
         
         // Sort each bucket
-        earlier.sort { ($0.parsedGameDate ?? .distantPast) > ($1.parsedGameDate ?? .distantPast) } // desc
+        earlier.sort { ($0.parsedGameDate ?? .distantPast) > ($1.parsedGameDate ?? .distantPast) } // desc (newest first)
         todayGames.sort { ($0.parsedGameDate ?? .distantPast) < ($1.parsedGameDate ?? .distantPast) } // asc
         upcoming.sort { ($0.parsedGameDate ?? .distantFuture) < ($1.parsedGameDate ?? .distantFuture) } // asc
         
@@ -287,9 +284,6 @@ private struct GameListSection: Identifiable {
 
 private enum Layout {
     static let horizontalPadding: CGFloat = 16
-    static let introSpacing: CGFloat = 4
-    static let introTopPadding: CGFloat = 12
-    static let introBottomPadding: CGFloat = 8
     static let filterSpacing: CGFloat = 12
     static let filterHorizontalPadding: CGFloat = 16
     static let filterVerticalPadding: CGFloat = 8
@@ -321,8 +315,6 @@ private struct CardPressButtonStyle: ButtonStyle {
 
 private enum Strings {
     static let navigationTitle = "Scroll Down Sports"
-    static let introTitle = "Scroll Down Sports"
-    static let introSubtitle = "Catch up at your own pace."
     static let allLeaguesLabel = "All"
     static let loadingTitle = "Loading games..."
     static let errorIconName = "exclamationmark.triangle"

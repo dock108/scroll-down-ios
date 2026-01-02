@@ -13,6 +13,50 @@ enum DataMode: String, CaseIterable {
     }
 }
 
+// MARK: - Dev Clock
+
+/// Centralized date provider for consistent time handling
+/// In mock mode: always returns Nov 12, 2024 at noon
+/// In API mode: returns real system time
+enum AppDate {
+    /// The fixed dev date: November 12, 2024 at 12:00 PM
+    private static let devDate: Date = {
+        var components = DateComponents()
+        components.year = 2024
+        components.month = 11
+        components.day = 12
+        components.hour = 12
+        components.minute = 0
+        components.second = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }()
+    
+    /// Returns the current date based on data mode
+    static func now() -> Date {
+        AppConfig.shared.dataMode == .mock ? devDate : Date()
+    }
+    
+    /// Start of today based on AppDate.now()
+    static var startOfToday: Date {
+        Calendar.current.startOfDay(for: now())
+    }
+    
+    /// End of today (23:59:59) based on AppDate.now()
+    static var endOfToday: Date {
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfToday)!.addingTimeInterval(-1)
+    }
+    
+    /// Start of the history window (2 days ago)
+    static var historyWindowStart: Date {
+        Calendar.current.date(byAdding: .day, value: -2, to: startOfToday)!
+    }
+    
+    /// Start of tomorrow
+    static var startOfTomorrow: Date {
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfToday)!
+    }
+}
+
 /// App-wide configuration singleton
 final class AppConfig: ObservableObject {
     static let shared = AppConfig()

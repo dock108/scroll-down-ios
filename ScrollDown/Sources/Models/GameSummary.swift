@@ -117,9 +117,8 @@ extension GameSummary {
     }
 
     var statusLine: String {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let isUpcoming = parsedGameDate.map { calendar.startOfDay(for: $0) > today } ?? false
+        let todayEnd = AppDate.endOfToday
+        let isUpcoming = parsedGameDate.map { $0 > todayEnd } ?? false
         
         switch inferredStatus {
         case .scheduled:
