@@ -45,6 +45,7 @@
 		0100000000000036 /* TimelineRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000036 /* TimelineRowView.swift */; };
 		0100000000000037 /* GameTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000037 /* GameTheme.swift */; };
 		0100000000000038 /* HomeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000038 /* HomeTheme.swift */; };
+		0100000000000039 /* CollapsibleCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000039 /* CollapsibleCards.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,7 @@
 		0200000000000036 /* TimelineRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineRowView.swift; sourceTree = "<group>"; };
 		0200000000000037 /* GameTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTheme.swift; sourceTree = "<group>"; };
 		0200000000000038 /* HomeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTheme.swift; sourceTree = "<group>"; };
+		0200000000000039 /* CollapsibleCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCards.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 		0400000000000008 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0200000000000039 /* CollapsibleCards.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				0100000000000036 /* TimelineRowView.swift in Sources */,
 				0100000000000037 /* GameTheme.swift in Sources */,
 				0100000000000038 /* HomeTheme.swift in Sources */,
+				0100000000000039 /* CollapsibleCards.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

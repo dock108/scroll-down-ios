@@ -19,20 +19,20 @@ final class MockGameService: GameService {
             return cached
         }
         
-        // Try to load specific game file
-        let filename = "game-\(String(format: "%03d", id == 12345 ? 1 : 2))"
-        let result: Result<GameDetailResponse, Error> = MockLoader.loadResult(filename)
-        
-        switch result {
-        case .success(let response):
-            gameCache[id] = response
-            return response
-        case .failure:
-            // Fallback to game-001
-            let fallback: GameDetailResponse = MockLoader.load("game-001")
-            gameCache[id] = fallback
-            return fallback
+        // Ensure games are generated
+        if generatedGames == nil {
+            generatedGames = MockDataGenerator.generateGames()
         }
+        
+        // Find the game summary for this ID
+        guard let gameSummary = generatedGames?.first(where: { $0.id == id }) else {
+            throw GameServiceError.notFound
+        }
+        
+        // Generate a detail response for this specific game
+        let response = MockDataGenerator.generateGameDetail(from: gameSummary)
+        gameCache[id] = response
+        return response
     }
     
     func fetchGames(league: LeagueCode?, limit: Int, offset: Int) async throws -> GameListResponse {
@@ -243,5 +243,221 @@ private enum MockDataGenerator {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
         return formatter.string(from: date)
+    }
+    
+    // MARK: - Game Detail Generator
+    
+    static func generateGameDetail(from summary: GameSummary) -> GameDetailResponse {
+        let status = summary.status ?? .scheduled
+        let isCompleted = status == .completed
+        let isLive = status == .inProgress
+        let hasData = isCompleted || isLive
+        
+        // Build the full Game object
+        let game = Game(
+            id: summary.id,
+            leagueCode: summary.leagueCode,
+            season: 2024,
+            seasonType: "regular",
+            gameDate: summary.gameDate,
+            homeTeam: summary.homeTeam,
+            awayTeam: summary.awayTeam,
+            homeScore: summary.homeScore,
+            awayScore: summary.awayScore,
+            status: status,
+            scrapeVersion: summary.scrapeVersion,
+            lastScrapedAt: summary.lastScrapedAt,
+            hasBoxscore: summary.hasBoxscore,
+            hasPlayerStats: summary.hasPlayerStats,
+            hasOdds: summary.hasOdds,
+            hasSocial: summary.hasSocial,
+            hasPbp: summary.hasPbp,
+            playCount: summary.playCount,
+            socialPostCount: summary.socialPostCount,
+            homeTeamXHandle: nil,
+            awayTeamXHandle: nil
+        )
+        
+        return GameDetailResponse(
+            game: game,
+            teamStats: hasData ? generateTeamStats(home: summary.homeTeam, away: summary.awayTeam) : [],
+            playerStats: hasData ? generatePlayerStats(home: summary.homeTeam, away: summary.awayTeam) : [],
+            odds: generateOdds(),
+            socialPosts: generateSocialPosts(home: summary.homeTeam, away: summary.awayTeam),
+            plays: hasData ? generatePlays(home: summary.homeTeam, away: summary.awayTeam, isComplete: isCompleted) : [],
+            derivedMetrics: [:],
+            rawPayloads: [:]
+        )
+    }
+    
+    private static func generateOdds() -> [OddsEntry] {
+        [
+            OddsEntry(
+                book: "DraftKings",
+                marketType: .spread,
+                side: "home",
+                line: Double.random(in: -7...7),
+                price: -110,
+                isClosingLine: true,
+                observedAt: formatDate(Date())
+            ),
+            OddsEntry(
+                book: "FanDuel",
+                marketType: .total,
+                side: "over",
+                line: Double.random(in: 210...235),
+                price: -110,
+                isClosingLine: true,
+                observedAt: formatDate(Date())
+            ),
+        ]
+    }
+    
+    private static func generatePlayerStats(home: String, away: String) -> [PlayerStat] {
+        var stats: [PlayerStat] = []
+        
+        // Generate 5 players per team
+        let homeNames = ["J. Smith", "M. Johnson", "A. Williams", "R. Brown", "D. Davis"]
+        let awayNames = ["C. Miller", "K. Wilson", "T. Moore", "L. Taylor", "P. Anderson"]
+        
+        for name in homeNames {
+            stats.append(PlayerStat(
+                team: home,
+                playerName: name,
+                minutes: Double.random(in: 20...38),
+                points: Int.random(in: 5...28),
+                rebounds: Int.random(in: 2...12),
+                assists: Int.random(in: 1...10),
+                yards: nil,
+                touchdowns: nil,
+                rawStats: [:],
+                source: "mock",
+                updatedAt: formatDate(Date())
+            ))
+        }
+        
+        for name in awayNames {
+            stats.append(PlayerStat(
+                team: away,
+                playerName: name,
+                minutes: Double.random(in: 20...38),
+                points: Int.random(in: 5...28),
+                rebounds: Int.random(in: 2...12),
+                assists: Int.random(in: 1...10),
+                yards: nil,
+                touchdowns: nil,
+                rawStats: [:],
+                source: "mock",
+                updatedAt: formatDate(Date())
+            ))
+        }
+        
+        return stats
+    }
+    
+    private static func generateTeamStats(home: String, away: String) -> [TeamStat] {
+        [
+            TeamStat(
+                team: home,
+                isHome: true,
+                stats: [
+                    "fgPct": AnyCodable(Double.random(in: 42...52)),
+                    "threePct": AnyCodable(Double.random(in: 30...42)),
+                    "ftPct": AnyCodable(Double.random(in: 70...90)),
+                    "rebounds": AnyCodable(Int.random(in: 38...52)),
+                    "assists": AnyCodable(Int.random(in: 18...30)),
+                ],
+                source: "mock",
+                updatedAt: formatDate(Date())
+            ),
+            TeamStat(
+                team: away,
+                isHome: false,
+                stats: [
+                    "fgPct": AnyCodable(Double.random(in: 42...52)),
+                    "threePct": AnyCodable(Double.random(in: 30...42)),
+                    "ftPct": AnyCodable(Double.random(in: 70...90)),
+                    "rebounds": AnyCodable(Int.random(in: 38...52)),
+                    "assists": AnyCodable(Int.random(in: 18...30)),
+                ],
+                source: "mock",
+                updatedAt: formatDate(Date())
+            ),
+        ]
+    }
+    
+    private static func generateSocialPosts(home: String, away: String) -> [SocialPostEntry] {
+        let homeAbbrev = String(home.prefix(3)).uppercased()
+        let awayAbbrev = String(away.prefix(3)).uppercased()
+        return [
+            SocialPostEntry(
+                id: Int.random(in: 1000...9999),
+                postUrl: "https://twitter.com/nba/status/123456789",
+                postedAt: formatDate(Date()),
+                hasVideo: false,
+                teamAbbreviation: homeAbbrev,
+                tweetText: "Great matchup between \(away) and \(home) tonight!",
+                videoUrl: nil,
+                imageUrl: nil,
+                sourceHandle: "@nba",
+                mediaType: nil
+            ),
+            SocialPostEntry(
+                id: Int.random(in: 1000...9999),
+                postUrl: "https://twitter.com/espn/status/987654321",
+                postedAt: formatDate(Date()),
+                hasVideo: true,
+                teamAbbreviation: awayAbbrev,
+                tweetText: "Incredible play by \(away)!",
+                videoUrl: "https://example.com/highlight.mp4",
+                imageUrl: nil,
+                sourceHandle: "@espn",
+                mediaType: .video
+            ),
+        ]
+    }
+    
+    private static func generatePlays(home: String, away: String, isComplete: Bool) -> [PlayEntry] {
+        var plays: [PlayEntry] = []
+        let quarters = isComplete ? 4 : Int.random(in: 2...3)
+        
+        let playTypes: [PlayType] = [.madeShot, .missedShot, .rebound, .turnover, .steal, .foul, .freeThrow]
+        
+        var playIndex = 0
+        var homeScore = 0
+        var awayScore = 0
+        
+        for quarter in 1...quarters {
+            let playsInQuarter = Int.random(in: 40...60)
+            for i in 0..<playsInQuarter {
+                let isHome = Bool.random()
+                let team = isHome ? home : away
+                let teamAbbrev = String(team.prefix(3)).uppercased()
+                let playType = playTypes.randomElement()!
+                let minutes = 12 - (i * 12 / playsInQuarter)
+                let seconds = Int.random(in: 0...59)
+                
+                // Update scores for made shots
+                if playType == .madeShot {
+                    let points = Bool.random() ? 2 : 3
+                    if isHome { homeScore += points } else { awayScore += points }
+                }
+                
+                plays.append(PlayEntry(
+                    playIndex: playIndex,
+                    quarter: quarter,
+                    gameClock: "\(minutes):\(String(format: "%02d", seconds))",
+                    playType: playType,
+                    teamAbbreviation: teamAbbrev,
+                    playerName: "Player \(Int.random(in: 1...15))",
+                    description: "\(teamAbbrev) \(playType.rawValue.replacingOccurrences(of: "_", with: " "))",
+                    homeScore: homeScore,
+                    awayScore: awayScore
+                ))
+                playIndex += 1
+            }
+        }
+        
+        return plays
     }
 }

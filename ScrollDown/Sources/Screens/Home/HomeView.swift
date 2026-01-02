@@ -58,7 +58,7 @@ struct HomeView: View {
     private func leagueFilterButton(_ league: LeagueCode?, label: String) -> some View {
         Button(action: {
             selectedLeague = league
-            Task { await loadGames() }
+            Task { await loadGames(scrollToToday: false) }
         }) {
             Text(label)
                 .font(.subheadline.weight(.medium))
@@ -133,21 +133,9 @@ struct HomeView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: Layout.cardSpacing) {
                     ForEach(sectionedGames) { section in
-                        // Section header
-                        VStack(alignment: .leading, spacing: 0) {
-                            if section.title != Strings.sectionEarlier {
-                                Divider()
-                                    .padding(.horizontal, Layout.horizontalPadding)
-                                    .padding(.bottom, Layout.sectionDividerPadding)
-                            }
-                            
-                            Text(section.title)
-                                .font(.title3.weight(.bold))
-                                .foregroundColor(.primary)
-                                .padding(.horizontal, Layout.horizontalPadding)
-                                .padding(.top, Layout.sectionHeaderTopPadding)
-                                .id(section.title)
-                        }
+                        // Section header with ID for scrolling
+                        sectionHeader(for: section)
+                            .id(section.title)
                         
                         if section.games.isEmpty && section.title == Strings.sectionToday {
                             Text("No games scheduled for today")
@@ -171,14 +159,28 @@ struct HomeView: View {
                 }
                 .padding(.bottom, Layout.bottomPadding)
             }
-            .onAppear {
-                // Scroll to Today section on appear
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    withAnimation(.easeOut(duration: 0.3)) {
-                        proxy.scrollTo(Strings.sectionToday, anchor: .top)
-                    }
+            .onReceive(NotificationCenter.default.publisher(for: .scrollToToday)) { _ in
+                withAnimation(.easeOut(duration: 0.3)) {
+                    proxy.scrollTo(Strings.sectionToday, anchor: .top)
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func sectionHeader(for section: GameListSection) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if section.title != Strings.sectionEarlier {
+                Divider()
+                    .padding(.horizontal, Layout.horizontalPadding)
+                    .padding(.bottom, Layout.sectionDividerPadding)
+            }
+            
+            Text(section.title)
+                .font(.title3.weight(.bold))
+                .foregroundColor(.primary)
+                .padding(.horizontal, Layout.horizontalPadding)
+                .padding(.top, Layout.sectionHeaderTopPadding)
         }
     }
     
@@ -195,7 +197,7 @@ struct HomeView: View {
     
     // MARK: - Data Loading
     
-    private func loadGames() async {
+    private func loadGames(scrollToToday: Bool = true) async {
         isLoading = true
         errorMessage = nil
         
@@ -208,6 +210,14 @@ struct HomeView: View {
             )
             games = response.games
             isLoading = false
+            
+            // Trigger scroll to today after data is loaded
+            if scrollToToday {
+                // Delay to ensure views are rendered
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    NotificationCenter.default.post(name: .scrollToToday, object: nil)
+                }
+            }
         } catch {
             errorMessage = error.localizedDescription
             isLoading = false
@@ -328,6 +338,12 @@ private enum Strings {
     static let sectionEarlier = "Earlier"
     static let sectionToday = "Today"
     static let sectionUpcoming = "Upcoming"
+}
+
+// MARK: - Notification Names
+
+extension Notification.Name {
+    static let scrollToToday = Notification.Name("scrollToToday")
 }
 
 #Preview {
