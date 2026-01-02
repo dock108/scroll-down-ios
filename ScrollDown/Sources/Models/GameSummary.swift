@@ -58,8 +58,8 @@ extension GameSummary {
         static let dateTemplate = "MMM d"
         static let timeStyle: DateFormatter.Style = .short
         static let dateTimeSeparator = " — "
-        static let inProgressText = "Game in progress"
-        static let completedText = "Final — tap for recap"
+        static let inProgressText = "Live — catching up available"
+        static let completedText = "Final — recap available"
         static let postponedText = "Postponed"
         static let canceledText = "Canceled"
     }

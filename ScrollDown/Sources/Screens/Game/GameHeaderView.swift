@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GameHeaderView: View {
     let game: Game
-    let scoreRevealed: Bool
+    var scoreRevealed: Bool = false
 
     var body: some View {
         VStack(spacing: Layout.spacing) {
@@ -61,11 +61,11 @@ struct GameHeaderView: View {
     private var statusDescription: String {
         switch game.status {
         case .completed:
-            return scoreRevealed ? "Final score below" : "Game complete"
+            return "Game complete"
         case .scheduled:
-            return "Not started"
+            return "Starts soon"
         case .inProgress:
-            return "In progress"
+            return "Live — catching up available"
         case .postponed:
             return "Postponed"
         case .canceled:

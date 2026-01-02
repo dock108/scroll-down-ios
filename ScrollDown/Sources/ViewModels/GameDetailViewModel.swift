@@ -197,11 +197,11 @@ final class GameDetailViewModel: ObservableObject {
 }
 
 private enum Constants {
-    static let summaryTemplate = "A spoiler-free recap of %@ at %@."
-    static let summaryFallback = "A spoiler-free recap is on the way."
+    static let summaryTemplate = "Catch up on %@ at %@."
+    static let summaryFallback = "Catch up below."
     static let recapTeamsTemplate = "Matchup: %@ at %@."
     static let recapStatusTemplate = "Status: %@."
-    static let recapHighlightsTemplate = "Key moments and highlights are curated below."
+    static let recapHighlightsTemplate = "Key moments and highlights below."
     static let recapFallbackBullets = [
         "Matchup details are loading.",
         "Timeline updates will appear shortly.",

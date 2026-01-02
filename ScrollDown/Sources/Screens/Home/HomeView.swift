@@ -136,37 +136,29 @@ struct HomeView: View {
     }
     
     private var gameListView: some View {
-        List {
-            ForEach(sectionedGames) { section in
-                Section {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                ForEach(sectionedGames) { section in
+                    Text(section.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, Layout.horizontalPadding)
+                        .padding(.top, Layout.sectionHeaderTopPadding)
+                    
                     ForEach(section.games) { game in
                         NavigationLink(value: game) {
                             GameRowView(game: game)
                         }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, Layout.horizontalPadding)
                         .simultaneousGesture(TapGesture().onEnded {
                             triggerHapticIfNeeded(for: game)
                         })
-                        .listRowInsets(EdgeInsets(
-                            top: Layout.listRowVerticalPadding,
-                            leading: Layout.horizontalPadding,
-                            bottom: Layout.listRowVerticalPadding,
-                            trailing: Layout.horizontalPadding
-                        ))
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
                     }
-                } header: {
-                    Text(section.title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundColor(.secondary)
-                        .textCase(nil)
-                        .padding(.horizontal, Layout.horizontalPadding)
-                        .padding(.top, Layout.sectionHeaderTopPadding)
                 }
             }
+            .padding(.bottom, Layout.bottomPadding)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
     }
     
     private var dataModeIndicator: some View {
@@ -255,8 +247,9 @@ private enum Layout {
     static let errorIconSize: CGFloat = 48
     static let emptyIconSize: CGFloat = 48
     static let progressScale: CGFloat = 1.5
-    static let listRowVerticalPadding: CGFloat = 6
-    static let sectionHeaderTopPadding: CGFloat = 8
+    static let cardSpacing: CGFloat = 12
+    static let sectionHeaderTopPadding: CGFloat = 16
+    static let bottomPadding: CGFloat = 32
     static let dataModeSpacing: CGFloat = 4
     static let dataModeIndicatorSize: CGFloat = 8
     static let requestLimit = 50
