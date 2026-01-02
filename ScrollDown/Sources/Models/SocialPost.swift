@@ -62,3 +62,4 @@ struct SocialPostListResponse: Codable {
     let total: Int
 }
 
+

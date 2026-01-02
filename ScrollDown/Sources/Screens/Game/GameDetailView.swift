@@ -364,3 +364,4 @@ struct GameDetailView: View {
     .environmentObject(AppConfig.shared)
 }
 
+

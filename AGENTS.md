@@ -52,3 +52,4 @@ Models should align with `scroll-down-api-spec`. When API changes:
 
 - Run: `xcodebuild test -scheme ScrollDown`
 
+
