@@ -13,9 +13,9 @@
 - Related posts section with tap-to-reveal blur for score-containing posts
 
 ### Changed
-- README streamlined for clarity and quick start
-- GameDetailView refactored from 578 → 450 LOC
-- Empty directories removed (Components now populated, Assets removed)
+- Documentation consolidated under `/docs` with a lean root README
+- GameDetailView split into focused files to keep views under 500 LOC
+- Mock data generator extracted for cleaner networking layout
 - Timeline play-by-play now surfaces scores via separators (live, halftime, period end)
 
 ### Fixed
