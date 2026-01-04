@@ -56,6 +56,10 @@ final class ModelDecodingTests: XCTestCase {
         
         // Verify plays
         XCTAssertEqual(response.plays.count, 3)
+
+        // Verify compact moments
+        XCTAssertEqual(response.compactMoments?.count, 2)
+        XCTAssertEqual(response.compactMoments?.first?.description, "Opening tip sets the tempo early.")
     }
     
     // MARK: - PBP Response

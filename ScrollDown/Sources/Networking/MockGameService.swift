@@ -278,16 +278,35 @@ private enum MockDataGenerator {
             awayTeamXHandle: nil
         )
         
+        let plays = hasData ? generatePlays(home: summary.homeTeam, away: summary.awayTeam, isComplete: isCompleted) : []
+        let compactMoments = makeCompactMoments(from: plays)
+
         return GameDetailResponse(
             game: game,
             teamStats: hasData ? generateTeamStats(home: summary.homeTeam, away: summary.awayTeam) : [],
             playerStats: hasData ? generatePlayerStats(home: summary.homeTeam, away: summary.awayTeam) : [],
             odds: generateOdds(),
             socialPosts: generateSocialPosts(home: summary.homeTeam, away: summary.awayTeam),
-            plays: hasData ? generatePlays(home: summary.homeTeam, away: summary.awayTeam, isComplete: isCompleted) : [],
+            plays: plays,
+            compactMoments: compactMoments,
             derivedMetrics: [:],
             rawPayloads: [:]
         )
+    }
+
+    private static func makeCompactMoments(from plays: [PlayEntry]) -> [CompactMoment] {
+        guard !plays.isEmpty else {
+            return []
+        }
+
+        let targetMomentCount = 4
+        let strideCount = max(1, plays.count / targetMomentCount)
+        return plays.enumerated().compactMap { index, play in
+            guard index.isMultiple(of: strideCount) else {
+                return nil
+            }
+            return CompactMoment(play: play)
+        }
     }
     
     private static func generateOdds() -> [OddsEntry] {
