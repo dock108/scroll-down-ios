@@ -21,6 +21,7 @@ struct GameDetailView: View {
     @State private var isCompactSummaryExpanded = false
     @State private var isCompactTimelineExpanded = false
     @State private var isCompactPostsExpanded = false
+    @State private var selectedCompactMoment: CompactMoment?
 
     init(gameId: Int, detail: GameDetailResponse? = nil) {
         self.gameId = gameId
@@ -165,7 +166,10 @@ struct GameDetailView: View {
                     ) {
                         CompactTimelineView(
                             moments: viewModel.compactTimelineMoments,
-                            status: viewModel.game?.status
+                            status: viewModel.game?.status,
+                            onSelect: { moment in
+                                selectedCompactMoment = moment
+                            }
                         )
                     }
                     compactChapterSection(
@@ -182,6 +186,11 @@ struct GameDetailView: View {
             .padding(.bottom, Layout.bottomPadding)
         }
         .background(GameTheme.background)
+        .sheet(item: $selectedCompactMoment) { moment in
+            NavigationStack {
+                CompactMomentExpandedView(moment: moment, service: appConfig.gameService)
+            }
+        }
     }
 
     private var displayOptionsSection: some View {

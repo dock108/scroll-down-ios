@@ -52,6 +52,15 @@ final class RealGameService: GameService {
         
         throw GameServiceError.notImplemented
     }
+
+    func fetchCompactMomentPbp(momentId: StringOrInt) async throws -> PbpResponse {
+        // TODO: Implement real API call
+        // let url = baseURL.appendingPathComponent("/compact/\(momentId.stringValue)/pbp")
+        // let (data, _) = try await session.data(from: url)
+        // return try JSONDecoder().decode(PbpResponse.self, from: data)
+
+        throw GameServiceError.notImplemented
+    }
     
     func fetchSocialPosts(gameId: Int) async throws -> SocialPostListResponse {
         // TODO: Implement real API call
@@ -63,5 +72,4 @@ final class RealGameService: GameService {
         throw GameServiceError.notImplemented
     }
 }
-
 

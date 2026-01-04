@@ -37,6 +37,9 @@ The app runs in **mock mode** by default—no backend required. Toggle via `AppC
 - **MVVM architecture** — views don't contain business logic
 - **Spec-aligned models** — match [scroll-down-api-spec](https://github.com/dock108/scroll-down-api-spec)
 
+### Compact Timeline
+Tap a compact timeline moment to open its expanded view with a play-by-play slice.
+
 ### Running Tests
 
 ```bash
