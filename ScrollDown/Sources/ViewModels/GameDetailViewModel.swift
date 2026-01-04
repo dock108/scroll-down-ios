@@ -73,6 +73,15 @@ final class GameDetailViewModel: ObservableObject {
         detail?.socialPosts.filter { $0.hasVideo || $0.imageUrl != nil } ?? []
     }
 
+    var compactTimelineMoments: [CompactMoment] {
+        let moments = detail?.compactMoments ?? []
+        if !moments.isEmpty {
+            return moments
+        }
+
+        return (detail?.plays ?? []).map { CompactMoment(play: $0) }
+    }
+
     var preGamePosts: [SocialPostEntry] {
         splitPosts().preGame
     }

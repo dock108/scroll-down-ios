@@ -153,13 +153,10 @@ struct GameDetailView: View {
                         preGameContent
                     }
                     chapterSection(number: 3, title: "Timeline", subtitle: "Play-by-play") {
-                        timelineContent
-                    }
-                    .onChange(of: viewModel.timelineQuarters) { quarters in
-                        guard !hasInitializedQuarters else { return }
-                        // Q1 expanded, Q2+ collapsed per spec
-                        collapsedQuarters = Set(quarters.filter { $0.quarter > 1 }.map(\.quarter))
-                        hasInitializedQuarters = true
+                        CompactTimelineView(
+                            moments: viewModel.compactTimelineMoments,
+                            status: viewModel.game?.status
+                        )
                     }
                     chapterSection(number: 4, title: "Player Stats", subtitle: "Individual performance") {
                         playerStatsContent(viewModel.playerStats)
