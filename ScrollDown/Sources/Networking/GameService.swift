@@ -31,6 +31,11 @@ protocol GameService {
     /// - Returns: Social post list response
     func fetchSocialPosts(gameId: Int) async throws -> SocialPostListResponse
 
+    /// Fetch related posts for a game
+    /// - Parameter gameId: The game ID
+    /// - Returns: Related post list response
+    func fetchRelatedPosts(gameId: Int) async throws -> RelatedPostListResponse
+
     /// Fetch AI summary for a game
     /// - Parameter gameId: The game ID
     /// - Returns: Summary response

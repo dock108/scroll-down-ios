@@ -62,4 +62,30 @@ struct SocialPostListResponse: Codable {
     let total: Int
 }
 
+/// Related post entry as defined in the OpenAPI spec (RelatedPost schema)
+struct RelatedPost: Codable, Identifiable {
+    let id: Int
+    let postUrl: String
+    let postedAt: String
+    let containsScore: Bool
+    let text: String?
+    let imageUrl: String?
+    let sourceHandle: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case postUrl = "post_url"
+        case postedAt = "posted_at"
+        case containsScore = "contains_score"
+        case text
+        case imageUrl = "image_url"
+        case sourceHandle = "source_handle"
+    }
+}
+
+/// Related post list response as defined in the OpenAPI spec (RelatedPostListResponse schema)
+struct RelatedPostListResponse: Codable {
+    let posts: [RelatedPost]
+    let total: Int
+}
 

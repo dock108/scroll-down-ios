@@ -18,6 +18,7 @@ struct GameDetailView: View {
     @State private var isTeamStatsExpanded = false
     @State private var isFinalScoreExpanded = false
     @State private var isPostGameExpanded = false
+    @State private var isRelatedPostsExpanded = false
     @State private var isCompactSummaryExpanded = false
     @State private var isCompactTimelineExpanded = false
     @State private var isCompactPostsExpanded = false
@@ -126,6 +127,7 @@ struct GameDetailView: View {
                                 selectedSection = .final
                             }
                         postGameSection
+                        relatedPostsSection
                     }
                     .padding(.horizontal, Layout.horizontalPadding)
                 }
@@ -477,6 +479,8 @@ struct GameDetailView: View {
                     emptyText: "Post-game posts will appear here."
                 )
             }
+
+            relatedPostsCompactSection
         }
     }
     
@@ -550,6 +554,74 @@ struct GameDetailView: View {
                     HighlightCardView(post: post)
                 }
             }
+        }
+    }
+
+    private var relatedPostsSection: some View {
+        CollapsibleSectionCard(
+            title: "Related Posts",
+            subtitle: "More coverage",
+            isExpanded: $isRelatedPostsExpanded
+        ) {
+            relatedPostsContent
+        }
+        .accessibilityHint("Expands to show related posts")
+    }
+
+    private var relatedPostsCompactSection: some View {
+        VStack(alignment: .leading, spacing: Layout.listSpacing) {
+            Text("Related")
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.secondary)
+            relatedPostsContent
+        }
+    }
+
+    private var relatedPostsContent: some View {
+        VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+            switch viewModel.relatedPostsState {
+            case .idle, .loading:
+                HStack(spacing: Layout.listSpacing) {
+                    ProgressView()
+                    Text("Loading related posts...")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            case .failed(let message):
+                VStack(alignment: .leading, spacing: Layout.listSpacing) {
+                    Text("Related posts unavailable.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    Button("Retry") {
+                        Task { await viewModel.loadRelatedPosts(gameId: gameId, service: appConfig.gameService) }
+                    }
+                    .buttonStyle(.bordered)
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            case .loaded:
+                if viewModel.relatedPosts.isEmpty {
+                    EmptySectionView(text: "Related posts will appear here.")
+                } else {
+                    LazyVStack(spacing: Layout.cardSpacing) {
+                        ForEach(viewModel.relatedPosts) { post in
+                            RelatedPostCardView(
+                                post: post,
+                                isRevealed: viewModel.isRelatedPostRevealed(post),
+                                onReveal: {
+                                    withAnimation(.easeInOut) {
+                                        viewModel.revealRelatedPost(id: post.id)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        .task {
+            await viewModel.loadRelatedPosts(gameId: gameId, service: appConfig.gameService)
         }
     }
 

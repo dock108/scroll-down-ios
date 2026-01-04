@@ -27,6 +27,16 @@ final class GameDetailViewModel: ObservableObject {
     @Published var isLoading: Bool
     @Published var errorMessage: String?
     @Published private(set) var summaryState: SummaryState = .loading
+    @Published private(set) var relatedPosts: [RelatedPost] = []
+    @Published private(set) var relatedPostsState: RelatedPostsState = .idle
+    @Published private(set) var revealedRelatedPostIds: Set<Int> = []
+
+    enum RelatedPostsState: Equatable {
+        case idle
+        case loading
+        case loaded
+        case failed(String)
+    }
 
     init(detail: GameDetailResponse? = nil) {
         self.detail = detail
@@ -61,6 +71,33 @@ final class GameDetailViewModel: ObservableObject {
         } catch {
             summaryState = .failed(error.localizedDescription)
         }
+    }
+
+    func loadRelatedPosts(gameId: Int, service: GameService) async {
+        switch relatedPostsState {
+        case .loaded, .loading:
+            return
+        case .idle, .failed:
+            break
+        }
+
+        relatedPostsState = .loading
+
+        do {
+            let response = try await service.fetchRelatedPosts(gameId: gameId)
+            relatedPosts = response.posts
+            relatedPostsState = .loaded
+        } catch {
+            relatedPostsState = .failed(error.localizedDescription)
+        }
+    }
+
+    func revealRelatedPost(id: Int) {
+        revealedRelatedPostIds.insert(id)
+    }
+
+    func isRelatedPostRevealed(_ post: RelatedPost) -> Bool {
+        !post.containsScore || revealedRelatedPostIds.contains(post.id)
     }
 
     var game: Game? {
