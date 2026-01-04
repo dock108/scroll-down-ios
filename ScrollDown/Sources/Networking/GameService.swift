@@ -20,6 +20,11 @@ protocol GameService {
     /// - Parameter gameId: The game ID
     /// - Returns: PBP response with events
     func fetchPbp(gameId: Int) async throws -> PbpResponse
+
+    /// Fetch play-by-play slice for a compact moment
+    /// - Parameter momentId: The compact moment ID
+    /// - Returns: PBP response with events
+    func fetchCompactMomentPbp(momentId: StringOrInt) async throws -> PbpResponse
     
     /// Fetch social posts for a game
     /// - Parameter gameId: The game ID
@@ -47,5 +52,4 @@ enum GameServiceError: LocalizedError {
         }
     }
 }
-
 
