@@ -72,6 +72,16 @@ final class RealGameService: GameService {
         throw GameServiceError.notImplemented
     }
 
+    func fetchRelatedPosts(gameId: Int) async throws -> RelatedPostListResponse {
+        // TODO: Implement real API call
+        // var components = URLComponents(url: baseURL.appendingPathComponent("/api/posts"), resolvingAgainstBaseURL: true)!
+        // components.queryItems = [URLQueryItem(name: "game_id", value: String(gameId))]
+        // let (data, _) = try await session.data(from: components.url!)
+        // return try JSONDecoder().decode(RelatedPostListResponse.self, from: data)
+
+        throw GameServiceError.notImplemented
+    }
+
     func fetchSummary(gameId: Int) async throws -> AISummaryResponse {
         // TODO: Implement real API call
         // let url = baseURL.appendingPathComponent("/summary").appendingPathComponent(String(gameId))

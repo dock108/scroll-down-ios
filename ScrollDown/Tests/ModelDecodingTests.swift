@@ -92,6 +92,20 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertFalse(firstPost.hasVideo)
         XCTAssertEqual(firstPost.mediaType, .image)
     }
+
+    // MARK: - Related Posts Response
+
+    func testRelatedPostsResponseDecoding() throws {
+        let response: RelatedPostListResponse = MockLoader.load("related-posts")
+
+        XCTAssertEqual(response.posts.count, 5)
+        XCTAssertEqual(response.total, 5)
+
+        let firstPost = response.posts[0]
+        XCTAssertEqual(firstPost.id, 201)
+        XCTAssertTrue(firstPost.containsScore)
+        XCTAssertEqual(firstPost.sourceHandle, "NBA")
+    }
     
     // MARK: - Enum Decoding
     
