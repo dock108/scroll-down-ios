@@ -4,7 +4,7 @@
 
 ## Quick Context
 
-**What is this?** iOS client for Scroll Down Sports—spoiler-free sports recaps.
+**What is this?** Native iOS client for Scroll Down Sports — a thoughtful way to catch up on games.
 
 **Tech Stack:** Swift, SwiftUI, MVVM architecture
 
@@ -15,9 +15,9 @@
 
 ## Core Product Principles
 
-1. **Spoiler-safe by default** — Users arrive after games are played
-2. **Progressive disclosure** — Show context before scores
-3. **User control** — They decide when to reveal results
+1. **Progressive disclosure** — Show context before scores; users arrive after games are played
+2. **User-controlled pacing** — They decide when to reveal results
+3. **Mobile-first experience** — Designed for touch navigation and vertical scrolling
 
 ## Coding Standards
 
@@ -38,7 +38,7 @@ See `.cursorrules` for complete coding standards. Key points:
 ## Do NOT
 
 - Manually edit `ScrollDown.xcodeproj/project.pbxproj`
-- Break spoiler-safe defaults
+- Break progressive disclosure defaults
 - Add dependencies without justification
 - Use `print()` in production code
 
@@ -51,5 +51,3 @@ Models should align with `scroll-down-api-spec`. When API changes:
 ## Testing
 
 - Run: `xcodebuild test -scheme ScrollDown`
-
-

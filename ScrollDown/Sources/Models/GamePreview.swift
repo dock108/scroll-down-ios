@@ -1,6 +1,6 @@
 import Foundation
 
-/// Game preview metadata for spoiler-safe summaries.
+/// Game preview metadata for progressive disclosure summaries.
 struct GamePreview: Codable {
     let gameId: String
     let excitementScore: Int
