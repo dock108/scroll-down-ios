@@ -61,6 +61,8 @@
 		0100000000000052 /* TimelineScoreChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000052 /* TimelineScoreChipView.swift */; };
 		0100000000000053 /* CompactMomentPbpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000053 /* CompactMomentPbpViewModel.swift */; };
 		0100000000000054 /* related-posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 0200000000000054 /* related-posts.json */; };
+		5DA16DD0833168C007BE8FC5 /* TimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAB82899BC50DDBAC6863C9 /* TimeService.swift */; };
+		70C2F6FA900DED6AE16E0B15 /* AdminSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990F702D2F90CA93754B79CE /* AdminSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +121,8 @@
 		0200000000000052 /* TimelineScoreChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScoreChipView.swift; sourceTree = "<group>"; };
 		0200000000000053 /* CompactMomentPbpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactMomentPbpViewModel.swift; sourceTree = "<group>"; };
 		0200000000000054 /* related-posts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "related-posts.json"; sourceTree = "<group>"; };
+		990F702D2F90CA93754B79CE /* AdminSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AdminSettingsView.swift; sourceTree = "<group>"; };
+		BEAB82899BC50DDBAC6863C9 /* TimeService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimeService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +173,7 @@
 				0400000000000007 /* Screens */,
 				0400000000000008 /* Components */,
 				0400000000000013 /* ViewModels */,
+				D4236B1526DE4C2995DCB9B3 /* Services */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -221,6 +226,7 @@
 			children = (
 				0400000000000011 /* Home */,
 				0400000000000012 /* Game */,
+				990F702D2F90CA93754B79CE /* AdminSettingsView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -295,6 +301,14 @@
 				0200000000000028 /* GameDetailViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		D4236B1526DE4C2995DCB9B3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				BEAB82899BC50DDBAC6863C9 /* TimeService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -419,6 +433,8 @@
 				0100000000000051 /* RelatedPostCardView.swift in Sources */,
 				0100000000000052 /* TimelineScoreChipView.swift in Sources */,
 				0100000000000053 /* CompactMomentPbpViewModel.swift in Sources */,
+				5DA16DD0833168C007BE8FC5 /* TimeService.swift in Sources */,
+				70C2F6FA900DED6AE16E0B15 /* AdminSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -625,4 +641,3 @@
 	};
 	rootObject = 0800000000000001 /* Project object */;
 }
-

@@ -26,8 +26,17 @@ enum FeatureFlags {
 // MARK: - Dev Clock
 
 /// Centralized date provider for consistent time handling
-/// In mock mode: always returns Nov 12, 2024 at noon
-/// In API mode: returns real system time
+/// Beta Admin Feature: Supports time override via TimeService
+///
+/// Priority order:
+/// 1. TimeService override (if set) - for beta testing historical data
+/// 2. Mock mode dev date (if in mock mode) - for development
+/// 3. Real system time (default)
+///
+/// WHY THIS EXISTS:
+/// - Single source of truth for "now" throughout the app
+/// - Enables deterministic testing of historical data
+/// - No view/viewmodel should call Date() directly for logic
 enum AppDate {
     /// The fixed dev date: November 12, 2024 at 12:00 PM
     private static let devDate: Date = {
@@ -41,9 +50,23 @@ enum AppDate {
         return Calendar.current.date(from: components) ?? Date()
     }()
     
-    /// Returns the current date based on data mode
+    /// Returns the current date based on priority:
+    /// 1. TimeService override (beta testing)
+    /// 2. Dev date (mock mode)
+    /// 3. Real time (live mode)
     static func now() -> Date {
-        AppConfig.shared.environment == .mock ? devDate : Date()
+        // Beta admin: TimeService override takes precedence
+        if TimeService.shared.isSnapshotModeActive {
+            return TimeService.shared.now
+        }
+        
+        // Development: mock mode uses fixed date
+        if AppConfig.shared.environment == .mock {
+            return devDate
+        }
+        
+        // Production: real system time
+        return Date()
     }
     
     /// Start of today based on AppDate.now()
@@ -87,6 +110,45 @@ final class AppConfig: ObservableObject {
     /// Single source of truth for the API base URL.
     var apiBaseURL: URL {
         APIConfiguration.baseURL(for: environment)
+    }
+    
+    /// Beta Admin: Whether snapshot mode is active
+    var isSnapshotModeActive: Bool {
+        TimeService.shared.isSnapshotModeActive
+    }
+    
+    /// Beta Admin: Filter games for snapshot mode
+    /// In snapshot mode:
+    /// - Only show completed and scheduled games
+    /// - Exclude all live/in-progress games
+    /// - This ensures deterministic replay without partial data
+    func filterGamesForSnapshotMode(_ games: [GameSummary]) -> [GameSummary] {
+        guard isSnapshotModeActive else {
+            return games // Normal mode: show all games
+        }
+        
+        // Snapshot mode: exclude live games
+        let filtered = games.filter { game in
+            guard let status = game.status else {
+                // Unknown status: exclude to be safe
+                return false
+            }
+            
+            switch status {
+            case .completed, .scheduled, .postponed, .canceled:
+                return true // Safe for snapshot mode
+            case .inProgress:
+                return false // Exclude live games
+            }
+        }
+        
+        // Log filtering if games were excluded
+        if filtered.count < games.count {
+            let excluded = games.count - filtered.count
+            print("⏰ Snapshot mode: excluded \(excluded) live/unknown games")
+        }
+        
+        return filtered
     }
     
     private init() {}

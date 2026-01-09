@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var errorMessage: String?
     @State private var lastUpdatedAt: Date?
     @State private var selectedLeague: LeagueCode?
+    @State private var showingAdminSettings = false // Beta admin access
 
     var body: some View {
         ZStack {
@@ -39,12 +40,35 @@ struct HomeView: View {
         .task {
             await loadGames()
         }
+        .sheet(isPresented: $showingAdminSettings) {
+            AdminSettingsView()
+                .environmentObject(appConfig)
+        }
     }
 
     // MARK: - Subviews
 
     private var headerView: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Beta admin: snapshot mode indicator
+            #if DEBUG
+            if appConfig.isSnapshotModeActive, let display = TimeService.shared.snapshotDateDisplay {
+                HStack(spacing: 6) {
+                    Image(systemName: "clock.badge.checkmark.fill")
+                        .font(.caption2)
+                    Text("Testing mode: \(display)")
+                        .font(.caption2)
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.orange.opacity(0.8))
+                .clipShape(Capsule())
+                .padding(.horizontal, Layout.horizontalPadding)
+                .padding(.top, 8)
+            }
+            #endif
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Layout.filterSpacing) {
                     leagueFilterButton(nil, label: Strings.allLeaguesLabel)
@@ -85,6 +109,12 @@ struct HomeView: View {
         }
         .padding(.horizontal, Layout.horizontalPadding)
         .padding(.bottom, Layout.freshnessBottomPadding)
+        .onLongPressGesture(minimumDuration: 2.0) {
+            // Beta admin: long press to access admin settings
+            #if DEBUG
+            showingAdminSettings = true
+            #endif
+        }
     }
 
     private var contentView: some View {
@@ -247,7 +277,12 @@ struct HomeView: View {
     private func loadSection(range: GameRange, service: GameService) async -> SectionResult {
         do {
             let response = try await service.fetchGames(range: range, league: selectedLeague)
-            return SectionResult(range: range, games: response.games, lastUpdatedAt: response.lastUpdatedAt, errorMessage: nil)
+            
+            // Beta Admin: Apply snapshot mode filtering if active
+            // This excludes live/in-progress games to ensure deterministic replay
+            let filteredGames = appConfig.filterGamesForSnapshotMode(response.games)
+            
+            return SectionResult(range: range, games: filteredGames, lastUpdatedAt: response.lastUpdatedAt, errorMessage: nil)
         } catch {
             return SectionResult(range: range, games: [], lastUpdatedAt: nil, errorMessage: error.localizedDescription)
         }
