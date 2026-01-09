@@ -94,16 +94,26 @@ enum AppDate {
 final class AppConfig: ObservableObject {
     static let shared = AppConfig()
     
-    /// Current data mode - defaults to mock for development
-    @Published var environment: AppEnvironment = .mock
+    /// Current data mode - defaults to live for local infra testing
+    @Published var environment: AppEnvironment = .live
     
+    /// Stored services to ensure consistency (especially for mock data)
+    private var _mockService: MockGameService?
+    private var _realService: RealGameService?
+
     /// Returns the appropriate GameService based on current data mode
     var gameService: any GameService {
         switch environment {
         case .mock:
-            return MockGameService()
+            if _mockService == nil {
+                _mockService = MockGameService()
+            }
+            return _mockService!
         case .live:
-            return RealGameService(baseURL: apiBaseURL)
+            if _realService == nil {
+                _realService = RealGameService(baseURL: apiBaseURL)
+            }
+            return _realService!
         }
     }
 

@@ -96,7 +96,7 @@ enum MockDataGenerator {
                 continue
             }
 
-            let matchup = randomMatchup()
+            let matchup = randomMatchup(for: idStart)
             let status: GameStatus = allScheduled ? .scheduled : (allFinal ? .completed : .scheduled)
             let hasScores = status == .completed
 
@@ -147,7 +147,7 @@ enum MockDataGenerator {
                 continue
             }
 
-            let matchup = randomMatchup()
+            let matchup = randomMatchup(for: idStart)
             let hasScores = status == .completed
             let isLive = status == .inProgress
 
@@ -178,7 +178,7 @@ enum MockDataGenerator {
         return games
     }
 
-    private static func randomMatchup() -> (league: String, home: String, away: String) {
+    private static func randomMatchup(for id: Int) -> (league: String, home: String, away: String) {
         let matchups: [(String, String, String)] = [
             ("NBA", "Boston Celtics", "Los Angeles Lakers"),
             ("NBA", "Miami Heat", "Chicago Bulls"),
@@ -198,7 +198,8 @@ enum MockDataGenerator {
             ("MLB", "Los Angeles Dodgers", "San Francisco Giants")
         ]
 
-        return matchups.randomElement()!
+        // Deterministic selection based on ID to prevent "mixing and matching"
+        return matchups[abs(id) % matchups.count]
     }
 
     private static func formatDate(_ date: Date) -> String {

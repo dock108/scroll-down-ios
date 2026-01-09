@@ -7,7 +7,9 @@ enum APIConfiguration {
         case .mock:
             urlString = "https://mock.scrolldown.sports"
         case .live:
-            urlString = "https://api.scrolldown.sports"
+            // Point to local infrastructure for development
+            // Backend running on port 8000 per user infra screenshot
+            urlString = "http://localhost:8000"
         }
 
         guard let url = URL(string: urlString) else {

@@ -96,6 +96,18 @@ final class MockGameService: GameService {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 150_000_000) // 150ms
         
+        // Use cached detail if available to ensure consistency
+        if let detail = gameCache[gameId] {
+            return PbpResponse(events: mapPlaysToEvents(detail.plays, gameId: gameId))
+        }
+        
+        // Try to generate detail if not in cache
+        if let gameSummary = findOrGenerateSummary(for: gameId) {
+            let detail = MockDataGenerator.generateGameDetail(from: gameSummary)
+            gameCache[gameId] = detail
+            return PbpResponse(events: mapPlaysToEvents(detail.plays, gameId: gameId))
+        }
+        
         return MockLoader.load("pbp-001")
     }
 
@@ -109,6 +121,34 @@ final class MockGameService: GameService {
     func fetchSocialPosts(gameId: Int) async throws -> SocialPostListResponse {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 150_000_000) // 150ms
+        
+        // Use cached detail if available
+        if let detail = gameCache[gameId] {
+            return SocialPostListResponse(
+                posts: detail.socialPosts.map { entry in
+                    SocialPostResponse(
+                        id: entry.id,
+                        postUrl: entry.postUrl,
+                        postedAt: entry.postedAt,
+                        hasVideo: entry.hasVideo,
+                        teamAbbreviation: entry.teamAbbreviation,
+                        tweetText: entry.tweetText,
+                        videoUrl: entry.videoUrl,
+                        imageUrl: entry.imageUrl,
+                        sourceHandle: entry.sourceHandle,
+                        mediaType: entry.mediaType,
+                        revealLevel: .pre
+                    )
+                }
+            )
+        }
+        
+        // Try to generate detail if not in cache
+        if let gameSummary = findOrGenerateSummary(for: gameId) {
+            let detail = MockDataGenerator.generateGameDetail(from: gameSummary)
+            gameCache[gameId] = detail
+            return try await fetchSocialPosts(gameId: gameId)
+        }
         
         return MockLoader.load("social-posts")
     }
@@ -163,5 +203,34 @@ final class MockGameService: GameService {
                 reveal: reveal
             )
         )
+    }
+
+    // MARK: - Helpers
+
+    private func findOrGenerateSummary(for gameId: Int) -> GameSummary? {
+        if generatedGames == nil {
+            generatedGames = MockDataGenerator.generateGames()
+        }
+        return generatedGames?.first(where: { $0.id == gameId })
+    }
+
+    private func mapPlaysToEvents(_ plays: [PlayEntry], gameId: Int) -> [PbpEvent] {
+        plays.map { play in
+            PbpEvent(
+                id: .int(play.playIndex),
+                gameId: .int(gameId),
+                period: play.quarter,
+                gameClock: play.gameClock,
+                elapsedSeconds: nil,
+                eventType: play.playType.rawValue,
+                description: play.description,
+                team: play.teamAbbreviation,
+                teamId: nil,
+                playerName: play.playerName,
+                playerId: nil,
+                homeScore: play.homeScore,
+                awayScore: play.awayScore
+            )
+        }
     }
 }
