@@ -40,7 +40,12 @@ struct HomeView: View {
         .task {
             await loadGames()
         }
-        .sheet(isPresented: $showingAdminSettings) {
+        .sheet(isPresented: $showingAdminSettings, onDismiss: {
+            // Reload data after admin settings changed (e.g., snapshot mode)
+            Task {
+                await loadGames(scrollToToday: false)
+            }
+        }) {
             AdminSettingsView()
                 .environmentObject(appConfig)
         }
@@ -193,7 +198,7 @@ struct HomeView: View {
             VStack(spacing: Layout.skeletonSpacing) {
                 ForEach(0..<2, id: \.self) { _ in
                     LoadingSkeletonView(style: .gameCard)
-                        .padding(.horizontal, Layout.horizontalPadding)
+            .padding(.horizontal, Layout.horizontalPadding)
                 }
             }
             .padding(.vertical, Layout.sectionStatePadding)
@@ -215,14 +220,14 @@ struct HomeView: View {
             .padding(.vertical, Layout.sectionStatePadding)
         } else {
             ForEach(section.games) { game in
-                NavigationLink(value: AppRoute.game(id: game.id, league: game.leagueCode)) {
+                NavigationLink(value: AppRoute.game(id: game.id, league: game.league)) {
                     // Trust the backend-provided game.id for routing; never derive IDs locally.
                     GameRowView(game: game)
                 }
                 .buttonStyle(CardPressButtonStyle())
                 .padding(.horizontal, Layout.horizontalPadding)
                 .simultaneousGesture(TapGesture().onEnded {
-                    GameRoutingLogger.logTap(gameId: game.id, league: game.leagueCode)
+                    GameRoutingLogger.logTap(gameId: game.id, league: game.league)
                     triggerHapticIfNeeded(for: game)
                 })
             }
@@ -371,7 +376,7 @@ struct HomeView: View {
     // MARK: - Feedback
 
     private func triggerHapticIfNeeded(for game: GameSummary) {
-        guard game.status == .completed else { return }
+        guard game.status?.isCompleted == true else { return }
         let generator = UIImpactFeedbackGenerator(style: .soft)
         generator.impactOccurred()
     }

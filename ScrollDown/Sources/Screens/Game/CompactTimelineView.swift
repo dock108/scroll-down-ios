@@ -37,7 +37,7 @@ struct CompactTimelineView: View {
         switch status {
         case .inProgress:
             return "Live moments"
-        case .completed:
+        case .completed, .final:
             return "Final moments"
         default:
             return nil

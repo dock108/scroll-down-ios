@@ -8,6 +8,7 @@ import OSLog
 /// Production: Should never appear in release builds
 struct AdminSettingsView: View {
     @EnvironmentObject private var appConfig: AppConfig
+    @ObservedObject private var timeService = TimeService.shared
     @Environment(\.dismiss) private var dismiss
     
     @State private var showingDatePicker = false
@@ -21,13 +22,13 @@ struct AdminSettingsView: View {
             List {
                 // Current Status Section
                 Section {
-                    if TimeService.shared.isSnapshotModeActive {
+                    if timeService.isSnapshotModeActive {
                         VStack(alignment: .leading, spacing: 8) {
                             Label("Snapshot Mode Active", systemImage: "clock.badge.checkmark.fill")
                                 .font(.headline)
                                 .foregroundColor(.orange)
                             
-                            if let display = TimeService.shared.snapshotDateDisplay {
+                            if let display = timeService.snapshotDateDisplay {
                                 Text("Testing as: \(display)")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
@@ -54,7 +55,7 @@ struct AdminSettingsView: View {
                         Label("Set Snapshot Date", systemImage: "calendar.badge.clock")
                     }
                     
-                    if TimeService.shared.isSnapshotModeActive {
+                    if timeService.isSnapshotModeActive {
                         Button(role: .destructive) {
                             showingClearConfirmation = true
                         } label: {

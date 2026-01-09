@@ -42,6 +42,6 @@ private enum Layout {
         EmptySectionView(text: "This game doesn't have play-by-play available", icon: "list.bullet.clipboard")
         EmptySectionView(text: "Updates are still coming in", icon: "clock")
     }
-    .padding()
-    .background(Color(.systemGroupedBackground))
+        .padding()
+        .background(Color(.systemGroupedBackground))
 }

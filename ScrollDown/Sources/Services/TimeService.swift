@@ -10,7 +10,7 @@ import OSLog
 /// - Ensures no view/viewmodel calls Date() directly for logic
 /// - Production: always uses real system time
 /// - Beta: can freeze time to a specific moment
-final class TimeService {
+final class TimeService: ObservableObject {
     static let shared = TimeService()
     
     private let logger = Logger(subsystem: "com.scrolldown.app", category: "time")
@@ -18,7 +18,7 @@ final class TimeService {
     /// Beta-only time override
     /// When set, this value is treated as "now" throughout the app
     /// When nil, uses real system time
-    private var overrideDate: Date?
+    @Published private var overrideDate: Date?
     
     private init() {
         loadOverrideFromEnvironment()

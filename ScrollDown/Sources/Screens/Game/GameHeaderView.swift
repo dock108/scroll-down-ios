@@ -60,7 +60,7 @@ struct GameHeaderView: View {
 
     private var statusDescription: String {
         switch game.status {
-        case .completed:
+        case .completed, .final:
             return "Game complete"
         case .scheduled:
             return "Starts soon"

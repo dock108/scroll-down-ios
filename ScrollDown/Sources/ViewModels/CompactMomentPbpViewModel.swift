@@ -35,7 +35,7 @@ final class CompactMomentPbpViewModel: ObservableObject {
     
     // Pagination state per period
     @Published private(set) var visibleEventCounts: [Int: Int] = [:] // period -> count
-    
+
     private var loadedMomentId: String?
     private let eventsPerChunk = 20 // Load 20 events at a time per period
 

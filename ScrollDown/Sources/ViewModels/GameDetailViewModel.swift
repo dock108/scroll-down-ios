@@ -262,7 +262,7 @@ final class GameDetailViewModel: ObservableObject {
             }
         case .inProgress:
             contextParts.append("currently in progress")
-        case .completed:
+        case .completed, .final:
             contextParts.append("played on \(game.formattedDate)")
         default:
             break

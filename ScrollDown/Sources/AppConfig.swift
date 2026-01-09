@@ -100,7 +100,7 @@ final class AppConfig: ObservableObject {
     /// Stored services to ensure consistency (especially for mock data)
     private var _mockService: MockGameService?
     private var _realService: RealGameService?
-
+    
     /// Returns the appropriate GameService based on current data mode
     var gameService: any GameService {
         switch environment {
@@ -145,7 +145,7 @@ final class AppConfig: ObservableObject {
             }
             
             switch status {
-            case .completed, .scheduled, .postponed, .canceled:
+            case .completed, .final, .scheduled, .postponed, .canceled:
                 return true // Safe for snapshot mode
             case .inProgress:
                 return false // Exclude live games

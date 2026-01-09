@@ -17,8 +17,14 @@ enum GameStatus: String, Codable {
     case scheduled
     case inProgress = "in_progress"
     case completed
+    case final = "final"  // API returns "final" for completed games
     case postponed
     case canceled
+    
+    /// Normalize to canonical status
+    var isCompleted: Bool {
+        self == .completed || self == .final
+    }
 }
 
 // MARK: - Market Type

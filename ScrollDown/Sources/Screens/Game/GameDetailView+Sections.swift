@@ -29,24 +29,24 @@ extension GameDetailView {
             }
             
             // Recap content
-            VStack(alignment: .leading, spacing: GameDetailLayout.textSpacing) {
-                aiSummaryView
+        VStack(alignment: .leading, spacing: GameDetailLayout.textSpacing) {
+            aiSummaryView
 
-                VStack(alignment: .leading, spacing: GameDetailLayout.listSpacing) {
-                    ForEach(viewModel.recapBullets, id: \.self) { bullet in
-                        HStack(alignment: .top, spacing: GameDetailLayout.listSpacing) {
-                            Circle()
-                                .frame(width: GameDetailLayout.bulletSize, height: GameDetailLayout.bulletSize)
-                                .foregroundColor(.secondary)
-                                .padding(.top, GameDetailLayout.bulletOffset)
-                            Text(bullet)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        .accessibilityElement(children: .combine)
+            VStack(alignment: .leading, spacing: GameDetailLayout.listSpacing) {
+                ForEach(viewModel.recapBullets, id: \.self) { bullet in
+                    HStack(alignment: .top, spacing: GameDetailLayout.listSpacing) {
+                        Circle()
+                            .frame(width: GameDetailLayout.bulletSize, height: GameDetailLayout.bulletSize)
+                            .foregroundColor(.secondary)
+                            .padding(.top, GameDetailLayout.bulletOffset)
+                        Text(bullet)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
+                    .accessibilityElement(children: .combine)
                 }
             }
+        }
             
             // Outcome reveal gate (D3)
             revealGateView
@@ -559,7 +559,7 @@ extension GameDetailView {
             }
         }
     }
-    
+
     var relatedPostsSection: some View {
         CollapsibleSectionCard(
             title: "Related Posts",

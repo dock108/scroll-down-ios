@@ -16,7 +16,7 @@ struct GameRowView: View {
                 VStack(alignment: .leading, spacing: Layout.textSpacing) {
                     // League + Date row
                     HStack(spacing: Layout.metaSpacing) {
-                        Text(game.leagueCode)
+                        Text(game.league)
                             .font(.caption.weight(.semibold))
                             .foregroundColor(leagueColor)
                         
@@ -140,7 +140,7 @@ struct GameRowView: View {
     }
     
     private var matchupTitle: String {
-        "\(game.awayTeam) at \(game.homeTeam)"
+        "\(game.awayTeamName) at \(game.homeTeamName)"
     }
 
     private var statusText: String {
@@ -148,11 +148,14 @@ struct GameRowView: View {
     }
 
     private var shouldShowPlaceholder: Bool {
-        !(game.hasRequiredData ?? false)
+        // Show placeholder if no status or scheduled game
+        // hasRequiredData isn't in the snapshot API response, so derive from status
+        guard let status = game.status else { return true }
+        return status == .scheduled
     }
     
     private var leagueColor: Color {
-        switch game.leagueCode {
+        switch game.league {
         case "NBA": return Color(red: 0.0, green: 0.47, blue: 0.84)   // Blue
         case "NFL": return Color(red: 0.0, green: 0.53, blue: 0.32)   // Green
         case "MLB": return Color(red: 0.76, green: 0.15, blue: 0.15)  // Red
@@ -164,7 +167,7 @@ struct GameRowView: View {
     }
     
     private var accessibilityLabel: String {
-        "\(game.awayTeam) at \(game.homeTeam). \(game.statusLine)."
+        "\(game.awayTeamName) at \(game.homeTeamName). \(game.statusLine)."
     }
 
     private var excitementScore: Int {

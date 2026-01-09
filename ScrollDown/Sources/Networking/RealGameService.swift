@@ -22,7 +22,7 @@ final class RealGameService: GameService {
     // MARK: - GameService Implementation
 
     func fetchGame(id: Int) async throws -> GameDetailResponse {
-        try await request(path: "games/\(id)", queryItems: [])
+        try await request(path: "api/admin/sports/games/\(id)", queryItems: [])
     }
 
     func fetchGames(range: GameRange, league: LeagueCode?) async throws -> GameListResponse {
@@ -30,6 +30,16 @@ final class RealGameService: GameService {
         if let league {
             queryItems.append(URLQueryItem(name: "league", value: league.rawValue))
         }
+        
+        // Beta: Pass assume_now when snapshot mode is active
+        #if DEBUG
+        if let snapshotDate = TimeService.shared.snapshotDate {
+            let isoString = ISO8601DateFormatter().string(from: snapshotDate)
+            queryItems.append(URLQueryItem(name: "assume_now", value: isoString))
+            logger.debug("🕐 Passing assume_now=\(isoString) to backend")
+        }
+        #endif
+        
         // Trust backend snapshot windows for ordering and membership; avoid client-side guessing.
         return try await request(path: "games", queryItems: queryItems)
     }
@@ -69,18 +79,33 @@ final class RealGameService: GameService {
         }
 
         do {
+            logger.info("📡 Requesting: \(url.absoluteString, privacy: .public)")
             let (data, response) = try await session.data(from: url)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw URLError(.badServerResponse)
             }
+            logger.info("📡 Response status: \(httpResponse.statusCode, privacy: .public), bytes: \(data.count, privacy: .public)")
             guard (200..<300).contains(httpResponse.statusCode) else {
                 logger.error("Request failed path=\(path, privacy: .public) status=\(httpResponse.statusCode, privacy: .public)")
                 throw URLError(.badServerResponse)
             }
-            return try decoder.decode(T.self, from: data)
+            do {
+                let result = try decoder.decode(T.self, from: data)
+                logger.info("📡 Decode success for \(path, privacy: .public)")
+                return result
+            } catch {
+                // Log the raw response for debugging
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    logger.error("📡 Decode failed. Raw response: \(jsonString.prefix(500), privacy: .public)")
+                }
+                logger.error("📡 Decode error: \(error.localizedDescription, privacy: .public)")
+                throw error
+            }
         } catch let error as DecodingError {
+            logger.error("📡 DecodingError: \(String(describing: error), privacy: .public)")
             throw GameServiceError.decodingError(error)
         } catch {
+            logger.error("📡 NetworkError: \(error.localizedDescription, privacy: .public)")
             throw GameServiceError.networkError(error)
         }
     }

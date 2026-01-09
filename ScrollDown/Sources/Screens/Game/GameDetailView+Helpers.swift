@@ -231,7 +231,7 @@ extension GameDetailView {
                     icon: "exclamationmark.triangle"
                 )
                 .onTapGesture {
-                    Task { await viewModel.loadSummary(gameId: gameId, service: appConfig.gameService) }
+                        Task { await viewModel.loadSummary(gameId: gameId, service: appConfig.gameService) }
                 }
             case .loaded(let summary):
                 Text(summary)

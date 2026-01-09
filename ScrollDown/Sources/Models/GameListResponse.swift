@@ -1,9 +1,10 @@
 import Foundation
 
-/// Game list response as defined in the OpenAPI spec (GameListResponse schema)
+/// Game list response matching the /games snapshot endpoint
 struct GameListResponse: Codable {
+    let range: String?
     let games: [GameSummary]
-    let total: Int
+    let total: Int?
     let nextOffset: Int?
     let withBoxscoreCount: Int?
     let withPlayerStatsCount: Int?
@@ -13,6 +14,7 @@ struct GameListResponse: Codable {
     let lastUpdatedAt: String?
     
     enum CodingKeys: String, CodingKey {
+        case range
         case games
         case total
         case nextOffset = "next_offset"

@@ -54,10 +54,10 @@ enum MockDataGenerator {
         switch reveal {
         case .pre:
             // Pre-reveal: describe flow without outcomes
-            let opening = "\(awayTeam) and \(homeTeam) kept the pace steady early."
-            let middle = "Momentum shifted with timely plays on both ends."
-            let close = "Scan the timeline to uncover the defining moments."
-            return [opening, middle, close].joined(separator: " ")
+        let opening = "\(awayTeam) and \(homeTeam) kept the pace steady early."
+        let middle = "Momentum shifted with timely plays on both ends."
+        let close = "Scan the timeline to uncover the defining moments."
+        return [opening, middle, close].joined(separator: " ")
             
         case .post:
             // Post-reveal: include outcome and final score
@@ -219,12 +219,12 @@ enum MockDataGenerator {
         // Build the full Game object
         let game = Game(
             id: summary.id,
-            leagueCode: summary.leagueCode,
+            leagueCode: summary.league,
             season: 2024,
             seasonType: "regular",
-            gameDate: summary.gameDate,
-            homeTeam: summary.homeTeam,
-            awayTeam: summary.awayTeam,
+            gameDate: summary.startTime,
+            homeTeam: summary.homeTeamName,
+            awayTeam: summary.awayTeamName,
             homeScore: summary.homeScore,
             awayScore: summary.awayScore,
             status: status,
@@ -241,15 +241,15 @@ enum MockDataGenerator {
             awayTeamXHandle: nil
         )
 
-        let plays = hasData ? generatePlays(home: summary.homeTeam, away: summary.awayTeam, isComplete: isCompleted) : []
+        let plays = hasData ? generatePlays(home: summary.homeTeamName, away: summary.awayTeamName, isComplete: isCompleted) : []
         let compactMoments = makeCompactMoments(from: plays)
 
         return GameDetailResponse(
             game: game,
-            teamStats: hasData ? generateTeamStats(home: summary.homeTeam, away: summary.awayTeam) : [],
-            playerStats: hasData ? generatePlayerStats(home: summary.homeTeam, away: summary.awayTeam) : [],
+            teamStats: hasData ? generateTeamStats(home: summary.homeTeamName, away: summary.awayTeamName) : [],
+            playerStats: hasData ? generatePlayerStats(home: summary.homeTeamName, away: summary.awayTeamName) : [],
             odds: generateOdds(),
-            socialPosts: generateSocialPosts(home: summary.homeTeam, away: summary.awayTeam),
+            socialPosts: generateSocialPosts(home: summary.homeTeamName, away: summary.awayTeamName),
             plays: plays,
             compactMoments: compactMoments,
             derivedMetrics: [:],

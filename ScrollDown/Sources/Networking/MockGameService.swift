@@ -48,12 +48,13 @@ final class MockGameService: GameService {
         
         // Apply league filter if specified
         if let league = league {
-            games = games.filter { $0.leagueCode == league.rawValue }
+            games = games.filter { $0.league == league.rawValue }
         }
 
         games = filterGames(games, for: range)
         
         return GameListResponse(
+            range: range.rawValue,
             games: games,
             total: games.count,
             nextOffset: nil,
