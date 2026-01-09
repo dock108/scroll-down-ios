@@ -28,6 +28,10 @@ struct SocialPostEntry: Codable, Identifiable {
 }
 
 /// Social post API response as defined in the OpenAPI spec (SocialPostResponse schema)
+/// REVEAL PHILOSOPHY:
+/// - Posts include reveal_level from backend (pre or post)
+/// - Client filters based on user's outcome visibility preference
+/// - Default behavior: show only "pre" posts until outcome is revealed
 struct SocialPostResponse: Codable, Identifiable {
     let id: Int
     let gameId: Int
@@ -40,6 +44,7 @@ struct SocialPostResponse: Codable, Identifiable {
     let tweetText: String?
     let sourceHandle: String?
     let mediaType: MediaType?
+    let revealLevel: RevealLevel? // Backend-provided reveal level
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -53,6 +58,25 @@ struct SocialPostResponse: Codable, Identifiable {
         case tweetText = "tweet_text"
         case sourceHandle = "source_handle"
         case mediaType = "media_type"
+        case revealLevel = "reveal_level"
+    }
+    
+    /// Whether this post is safe to show given current reveal state
+    /// If reveal_level is unknown, treat as post (hide until revealed)
+    func isSafeToShow(outcomeRevealed: Bool) -> Bool {
+        guard let revealLevel else {
+            // Unknown reveal level: treat as post (hide until revealed)
+            return outcomeRevealed
+        }
+        
+        switch revealLevel {
+        case .pre:
+            // Pre-reveal posts are always safe
+            return true
+        case .post:
+            // Post-reveal posts only shown when outcome is revealed
+            return outcomeRevealed
+        }
     }
 }
 

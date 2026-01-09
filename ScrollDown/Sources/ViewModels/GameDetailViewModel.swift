@@ -38,6 +38,18 @@ final class GameDetailViewModel: ObservableObject {
     @Published private(set) var relatedPostsState: RelatedPostsState = .idle
     @Published private(set) var revealedRelatedPostIds: Set<Int> = []
     @Published var isOutcomeRevealed: Bool = false // User-controlled outcome visibility
+    
+    // Social posts (Phase E)
+    @Published private(set) var socialPosts: [SocialPostResponse] = []
+    @Published private(set) var socialPostsState: SocialPostsState = .idle
+    @Published var isSocialTabEnabled: Bool = false // User preference for social tab
+    
+    enum SocialPostsState: Equatable {
+        case idle
+        case loading
+        case loaded
+        case failed(String)
+    }
 
     enum RelatedPostsState: Equatable {
         case idle
@@ -132,6 +144,58 @@ final class GameDetailViewModel: ObservableObject {
         } catch {
             relatedPostsState = .failed(error.localizedDescription)
         }
+    }
+    
+    /// Load social posts for the game (Phase E)
+    /// Only loads if user has enabled social tab
+    func loadSocialPosts(gameId: Int, service: GameService) async {
+        guard isSocialTabEnabled else {
+            return // Social tab disabled, don't load
+        }
+        
+        switch socialPostsState {
+        case .loaded, .loading:
+            return
+        case .idle, .failed:
+            break
+        }
+        
+        socialPostsState = .loading
+        
+        do {
+            let response = try await service.fetchSocialPosts(gameId: gameId)
+            // Backend provides posts in chronological order
+            // Client preserves that order
+            socialPosts = response.posts
+            socialPostsState = .loaded
+        } catch {
+            socialPostsState = .failed(error.localizedDescription)
+        }
+    }
+    
+    /// Get social posts filtered by reveal level
+    /// CRITICAL: Respects outcome visibility preference
+    var filteredSocialPosts: [SocialPostResponse] {
+        socialPosts.filter { $0.isSafeToShow(outcomeRevealed: isOutcomeRevealed) }
+    }
+    
+    /// Enable social tab and load posts
+    func enableSocialTab(gameId: Int, service: GameService) async {
+        isSocialTabEnabled = true
+        // Persist preference
+        UserDefaults.standard.set(true, forKey: socialTabEnabledKey(for: gameId))
+        // Load posts
+        await loadSocialPosts(gameId: gameId, service: service)
+    }
+    
+    /// Load social tab preference
+    func loadSocialTabPreference(for gameId: Int) {
+        // Default is false (social tab disabled)
+        isSocialTabEnabled = UserDefaults.standard.bool(forKey: socialTabEnabledKey(for: gameId))
+    }
+    
+    private func socialTabEnabledKey(for gameId: Int) -> String {
+        "game.socialTabEnabled.\(gameId)"
     }
 
     func revealRelatedPost(id: Int) {

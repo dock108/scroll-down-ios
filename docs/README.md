@@ -23,7 +23,7 @@ This app provides a native iOS experience for catching up on sports games at you
 | [Phase B](PHASE_B.md) | ✅ Complete | Real backend feeds |
 | [Phase C](PHASE_C.md) | ✅ Complete | Timeline usability improvements |
 | [Phase D](PHASE_D.md) | ✅ Complete | Recaps and reveal control |
-| Phase E | 🔜 Upcoming | Social blending and narrative layering |
+| [Phase E](PHASE_E.md) | ✅ Complete | Social blending (optional, reveal-aware) |
 
 ## Quick Reference
 

@@ -4,12 +4,13 @@ enum GameSection: String, CaseIterable, Hashable {
     case header
     case overview
     case timeline
+    case social
     case playerStats
     case teamStats
     case final
 
     static var navigationSections: [GameSection] {
-        [.overview, .timeline, .playerStats, .teamStats, .final]
+        [.overview, .timeline, .social, .playerStats, .teamStats, .final]
     }
 
     var title: String {
@@ -20,6 +21,8 @@ enum GameSection: String, CaseIterable, Hashable {
             return "Overview"
         case .timeline:
             return "Timeline"
+        case .social:
+            return "Social"
         case .playerStats:
             return "Player Stats"
         case .teamStats:

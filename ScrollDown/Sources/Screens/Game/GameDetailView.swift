@@ -19,6 +19,7 @@ struct GameDetailView: View {
     @State var isTeamStatsExpanded = false
     @State var isFinalScoreExpanded = false
     @State var isPostGameExpanded = false
+    @State var isSocialExpanded = false
     @State var isRelatedPostsExpanded = false
     @State var isCompactSummaryExpanded = false
     @State var isCompactTimelineExpanded = false
@@ -70,6 +71,12 @@ struct GameDetailView: View {
                 // Load reveal preference before loading summary
                 viewModel.loadRevealPreference(for: gameId)
                 await viewModel.loadSummary(gameId: gameId, service: appConfig.gameService)
+                
+                // Load social tab preference (Phase E)
+                viewModel.loadSocialTabPreference(for: gameId)
+                if viewModel.isSocialTabEnabled {
+                    await viewModel.loadSocialPosts(gameId: gameId, service: appConfig.gameService)
+                }
             }
         }
     }
@@ -157,6 +164,11 @@ struct GameDetailView: View {
                                 .id(GameSection.timeline)
                                 .onAppear {
                                     selectedSection = .timeline
+                                }
+                            socialSection
+                                .id(GameSection.social)
+                                .onAppear {
+                                    selectedSection = .social
                                 }
                             playerStatsSection(viewModel.playerStats)
                                 .id(GameSection.playerStats)

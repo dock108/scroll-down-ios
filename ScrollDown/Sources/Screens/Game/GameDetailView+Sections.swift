@@ -465,6 +465,101 @@ extension GameDetailView {
         }
     }
 
+    /// Social section (Phase E) - Optional, opt-in social context
+    var socialSection: some View {
+        CollapsibleSectionCard(
+            title: "Social",
+            subtitle: "Team reactions",
+            isExpanded: $isSocialExpanded
+        ) {
+            socialContent
+        }
+        .accessibilityHint("Expands to show social posts")
+    }
+    
+    @ViewBuilder
+    private var socialContent: some View {
+        if !viewModel.isSocialTabEnabled {
+            // Social tab not yet enabled - show opt-in prompt
+            socialOptInView
+        } else {
+            // Social tab enabled - show posts
+            socialFeedView
+        }
+    }
+    
+    /// Opt-in prompt for social tab
+    private var socialOptInView: some View {
+        VStack(alignment: .leading, spacing: GameDetailLayout.listSpacing) {
+            Text("See team reactions and highlights from social media")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            Button {
+                Task {
+                    await viewModel.enableSocialTab(gameId: gameId, service: appConfig.gameService)
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "bubble.left.and.bubble.right")
+                    Text("Enable Social Tab")
+                }
+                .font(.subheadline.weight(.medium))
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(GameTheme.accentColor)
+            
+            Text("Optional: Adds extra color without affecting the core timeline")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, GameDetailLayout.smallSpacing)
+    }
+    
+    /// Social feed view with reveal-aware filtering
+    @ViewBuilder
+    private var socialFeedView: some View {
+        switch viewModel.socialPostsState {
+        case .idle, .loading:
+            HStack(spacing: GameDetailLayout.listSpacing) {
+                ProgressView()
+                Text("Loading social posts...")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+        case .failed(let message):
+            VStack(alignment: .leading, spacing: GameDetailLayout.listSpacing) {
+                Text("Social posts unavailable.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Button("Retry") {
+                    Task { await viewModel.loadSocialPosts(gameId: gameId, service: appConfig.gameService) }
+                }
+                .buttonStyle(.bordered)
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        case .loaded:
+            let filteredPosts = viewModel.filteredSocialPosts
+            if filteredPosts.isEmpty {
+                EmptySectionView(text: viewModel.isOutcomeRevealed 
+                    ? "No social posts available for this game."
+                    : "No pre-reveal social posts yet. More may appear after revealing the outcome.")
+            } else {
+                LazyVStack(spacing: GameDetailLayout.cardSpacing) {
+                    ForEach(filteredPosts) { post in
+                        SocialPostCardView(
+                            post: post,
+                            isOutcomeRevealed: viewModel.isOutcomeRevealed
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
     var relatedPostsSection: some View {
         CollapsibleSectionCard(
             title: "Related Posts",
